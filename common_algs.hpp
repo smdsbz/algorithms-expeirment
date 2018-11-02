@@ -22,7 +22,7 @@ int randint(int lower, int upper);
  */
 template <typename T>
 void print_vector(std::vector<T>   &src,
-                  const char       *end="\n");
+                  const char       *end = "\n");
 
 /******* Algorithms *******/
 
@@ -31,17 +31,24 @@ void print_vector(std::vector<T>   &src,
  * of the split position, where elements left of split position are all *less
  * than or equal to* split element, elements right of split position are all
  * *greater than* split element.
+ *
+ * NOTE:
+ * The `leq` function should be equal to `operator<=`!
  */
 template <typename T>
-unsigned partition(std::vector<T>   &src,
-                   const unsigned    left,
-                   const unsigned    right,
-                   const bool        random = false);
+unsigned partition(std::vector<T>  &src,
+                   const unsigned   left,
+                   const unsigned   right,
+                   bool           (*leq)(const T &lhs,
+                                         const T &rhs),
+                   const bool       random = false);
 
 /**
  * The Quick Sort algorithm.
  */
 template <typename T>
-std::vector<T> & quick_sort(std::vector<T>  &src);
+std::vector<T> & quick_sort(std::vector<T>  &src,
+                            bool           (*leq)(const T &lhs,
+                                                  const T &rhs));
 
 #endif

@@ -43,6 +43,8 @@ unsigned
 partition(vector<DATA_T>   &src,
           const unsigned    left,
           const unsigned    right,
+          bool            (*leq)(const DATA_T &lhs,
+                                 const DATA_T &rhs),
           const bool        random) {
     /**
      * Note:
@@ -60,9 +62,9 @@ partition(vector<DATA_T>   &src,
     unsigned rightidx = right;
     // part elements
     while (leftidx != rightidx) {
-        if (src[leftidx] <= split_val) {
+        if (leq(src[leftidx], split_val)) {
             ++leftidx;
-        } else if (src[rightidx] > split_val) {
+        } else if (!leq(src[rightidx], split_val)) {
             --rightidx;
         } else {
             temp = src[leftidx];
@@ -71,7 +73,7 @@ partition(vector<DATA_T>   &src,
         }
     }
     // place split element
-    if (src[leftidx] <= split_val) {
+    if (leq(src[leftidx], split_val)) {
         temp = src[leftidx];
         src[leftidx] = split_val;
         split_val = temp;
@@ -83,23 +85,27 @@ partition(vector<DATA_T>   &src,
 
 template <typename DATA_T>
 vector<DATA_T> &
-__quick_sort_recblk(vector<DATA_T>  &src,
-                    unsigned         left,
-                    unsigned         right) {
+__quick_sort_recblk(vector<DATA_T> &src,
+                    unsigned        left,
+                    unsigned        right,
+                    bool          (*leq)(const DATA_T &lhs,
+                                         const DATA_T &rhs)) {
     if (left == right) {
         return src;
     }
-    unsigned splitidx = partition(src, left, right, /*random=*/false);
-    __quick_sort_recblk(src, left, splitidx - 1);
-    __quick_sort_recblk(src, splitidx, right);
+    unsigned splitidx = partition(src, left, right, leq, /*random=*/false);
+    __quick_sort_recblk(src, left, splitidx - 1, leq);
+    __quick_sort_recblk(src, splitidx, right, leq);
     return src;
 }
 
 
 template <typename DATA_T>
 vector<DATA_T> &
-quick_sort(vector<DATA_T> &src) {
-    __quick_sort_recblk(src, 0, src.size() - 1);
+quick_sort(vector<DATA_T>  &src,
+           bool           (*leq)(const DATA_T &lhs,
+                                 const DATA_T &rhs)) {
+    __quick_sort_recblk(src, 0, src.size() - 1, leq);
     return src;
 }
 
@@ -109,9 +115,11 @@ quick_sort(vector<DATA_T> &src) {
 // #define TEST
 #ifdef  TEST
 
+bool arr_leq(const int &lhs, const int &rhs) { return lhs <= rhs; }
+
 int main(void) {
-    vector<int> arr = {2, 4, 1, 32, 6, 123, 6};
-    quick_sort(arr);
+    vector<int> arr = {1, 958, 3546, 6798, 879, 5678, 3546};
+    quick_sort(arr, arr_leq);
     print_vector(arr);
     return 0;
 }
