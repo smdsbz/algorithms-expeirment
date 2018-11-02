@@ -282,7 +282,6 @@ public:
             .addPositiveValue(temp_mid.powerByTen(split_idx))
             .addPositiveValue(temp_low)
         );
-        retbn.shrinkSpace();
         retbn.number = sign_flag + retbn.number;
         return retbn;
     }
@@ -292,7 +291,7 @@ public:
 
 int main(void) {
 
-    long n1(-5432), n2(-243);
+    long n1(-23412), n2(-2);
     BigNumber bn1(std::to_string(n1)), bn2(std::to_string(n2));
 
     long long target_result = n1 * n2;
