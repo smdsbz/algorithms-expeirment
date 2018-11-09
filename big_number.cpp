@@ -210,7 +210,6 @@ public:
         return lhs.number == rhs.number;
     }
 
-
     virtual bool operator<(const BigNumber &o) const {
         bool lhs_neg = !this->isPositive(),
             rhs_neg = !o.isPositive();
@@ -227,11 +226,9 @@ public:
         return lhs.isLessThanAbs(rhs);
     }
 
-
     virtual bool operator>(const BigNumber &o) const {
-        return ( (!((*this) < o)) && !((*this) == o) );
+        return ( !((*this) < o) && !((*this) == o) );
     }
-
 
     virtual bool operator<=(const BigNumber &o) const {
         return ( (*this) < o || (*this) == o );
