@@ -89,6 +89,7 @@ void construct_optimal_bst(root_table_t tab) {
 
 
 int main(void) {
+
     unsigned i_1[] = { 2, 2, 2, 1, 1 };
     unsigned i_2[] = { 4, 2, 2, 2 };
     unsigned i_3[] = { 5, 4, 3 };
@@ -100,6 +101,8 @@ int main(void) {
     tab.push_back(std::vector<unsigned>(std::begin(i_3), std::end(i_3)));
     tab.push_back(std::vector<unsigned>(std::begin(i_4), std::end(i_4)));
     tab.push_back(std::vector<unsigned>(std::begin(i_5), std::end(i_5)));
+
     construct_optimal_bst(tab);
+
     return 0;
 }

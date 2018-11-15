@@ -52,6 +52,7 @@ private:
         return false;
     }
 
+public:
 
     BigNumber addPositiveValue(const BigNumber &o) const {
         if (!(this->isPositive() && o.isPositive())) {
@@ -238,6 +239,57 @@ public:
         return ( !((*this) < o) );
     }
 
+    virtual BigNumber operator-(void) const {
+        BigNumber ret = *this;
+        ret.number = std::string("-") + ret.number;
+        return ret;
+    }
+
+
+    virtual BigNumber operator+(const BigNumber &o) const {
+        bool
+            is_lhs_pos = this->isPositive(),
+            is_rhs_pos = o.isPositive();
+        if (is_lhs_pos && is_rhs_pos) {     // if both positive
+            return this->addPositiveValue(o);
+        }
+        if (!is_lhs_pos && !is_rhs_pos) {   // if both negative
+            return -(
+                this->getAbsoluteValue()
+                .addPositiveValue(
+                    o.getAbsoluteValue()
+                )
+            );
+        }
+        // one positive, one negative
+        bool negate = false;
+        BigNumber
+            abs_lhs = this->getAbsoluteValue(),
+            abs_rhs = o.getAbsoluteValue(),
+            abs_dist;
+        // get absolute distance
+        if (abs_lhs > abs_rhs) {
+            abs_dist = abs_lhs.subtractPositiveNoLargerValue(abs_rhs);
+            if (!is_lhs_pos) {
+                negate = true;
+            }
+        } else {
+            abs_dist = abs_rhs.subtractPositiveNoLargerValue(abs_lhs);
+            if (!is_rhs_pos) {
+                negate = true;
+            }
+        }
+        // return truth value
+        if (negate) {
+            return -abs_dist;
+        }
+        return abs_dist;
+    }
+
+    virtual BigNumber operator-(const BigNumber &o) const {
+        return (*this) + (-o);
+    }
+
 
     virtual BigNumber operator*(const BigNumber &o) const {
         // smallest case return
@@ -288,19 +340,61 @@ public:
 
 int main(void) {
 
-    long n1(-23412), n2(-2);
-    BigNumber bn1(std::to_string(n1)), bn2(std::to_string(n2));
-
-    long long target_result = n1 * n2;
-    long long output_result = std::stoll((bn1 * bn2).str());
-
-    if (target_result == output_result) {
-        std::cout << "pass" << std::endl;
+    BigNumber
+        a(std::string("9223372036854775807")),
+        b(std::string("1234567891111")),
+        target(std::string("11386878964471969137416693151577"));
+    BigNumber result = a * b;
+    std::cout << a.str() << " * " << b.str() << " = "
+              << result.str() << std::endl;
+    std::cout << "Is equal to expected result? ";
+    if (result == target) {
+        std::cout << "Yes!" << std::endl;
     } else {
-        std::cout << "expecting " << target_result
-            << ", but got " << output_result << std::endl;
+        std::cout << "Nein!" << std::endl;
     }
 
+    std::cout << std::endl;
+
+    a = target;
+    target = BigNumber(std::string("1476434256335201019505915952536059041319"
+        "057206399521214104693657122061789167297053187930937033"));
+    result = a * a * a;
+    std::cout << "ans * ans * ans = " << result.str() << std::endl;
+    std::cout << "Is equal to expected result? ";
+    if (result == target) {
+        std::cout << "Yes!" << std::endl;
+    } else {
+        std::cout << "Nein!" << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    a = target; b = target;
+    target = BigNumber(std::string("29528685126704020390118319050721180826381"
+        "14412799042428209387314244123578334594106375861874066"));
+    result = a + a;
+    std::cout << "ans + ans = " << result.str() << std::endl;
+    std::cout << "Is equal to expected result? ";
+    if (result == target) {
+        std::cout << "Yes!" << std::endl;
+    } else {
+        std::cout << "Nein!" << std::endl;
+    }
+
+    std::cout << std::endl;
+
+    b = result;
+    target = BigNumber(std::string("-1476434256335201019505915952536059041319"
+        "057206399521214104693657122061789167297053187930937033"));
+    result = a - b;
+    std::cout << "ans - last_ans = " << result.str() << std::endl;
+    std::cout << "Is equal to expected result? ";
+    if (result == target) {
+        std::cout << "Yes!" << std::endl;
+    } else {
+        std::cout << "Nein!" << std::endl;
+    }
 
     return 0;
 }

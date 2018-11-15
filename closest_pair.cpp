@@ -111,16 +111,10 @@ public:
 public:
 
     ClosestPair(void) { return; }
+    ClosestPair(vector<iPoint> points) : points(points) { return; }
     ~ClosestPair(void) { return; }
 
-    void ClosestPair::solve(void) {
-
-        cout << "Here's all the points:" << endl;
-        for (auto &point : this->points) {
-            cout << point.str() << endl;
-        }
-
-        cout << endl;
+    void solve(void) {
 
         // get pre-sort x-array and y-array
         // HACK: use address to uniquely identify Point
@@ -137,11 +131,6 @@ public:
 
         cout << "Distance between closest pair: "
             << ClosestPair::getClosestPair(x_sorted, y_sorted) << endl;
-
-        iPoint r1(52, 1), r2(23, 3);
-        cout << "Distance between "
-            << r1.str() << " and " << r2.str()
-            << " is " << iPoint::getL2Distance(r1, r2) << endl;
 
         return;
     }
@@ -228,6 +217,13 @@ double ClosestPair::getClosestPair(
 /******* Main *******/
 
 int main(void) {
-    ClosestPair().solve();
+
+    vector<iPoint> points = {
+        iPoint(51, 92), iPoint(42, 32), iPoint(-32, 35), iPoint(23, 3),
+        iPoint(52, 1)
+    };
+
+    ClosestPair(points).solve();
+
     return 0;
 }
